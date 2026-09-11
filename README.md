@@ -39,7 +39,9 @@ choice, and its own Pages site.
 
    jobs:
      publish:
-       uses: teerakarna/mkdocs-publisher/.github/workflows/publish.yml@main
+       # Pin to a commit SHA, not @main - same discipline you'd want for any third-party
+       # action. Find the current one with: git ls-remote https://github.com/teerakarna/mkdocs-publisher main
+       uses: teerakarna/mkdocs-publisher/.github/workflows/publish.yml@<commit-sha> # main
        with:
          working-directory: docs-site   # optional - defaults to repo root
    ```
