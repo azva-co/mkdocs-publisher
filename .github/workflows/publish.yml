@@ -1,0 +1,92 @@
+name: Publish MkDocs site
+
+# Reusable workflow: builds an MkDocs (Material) site with `mkdocs build --strict` and deploys it
+# to the CALLING repo's own GitHub Pages - not this repo's. This repo owns the mechanism only; it
+# never hosts content, so the same workflow serves any number of independent projects, in any org,
+# each publishing to its own Pages site.
+#
+# Usage, from a calling repo's own workflow:
+#
+#   name: Publish docs
+#   on:
+#     push:
+#       branches: [main]
+#   permissions:
+#     contents: read
+#     pages: write
+#     id-token: write
+#   jobs:
+#     publish:
+#       uses: teerakarna/mkdocs-publisher/.github/workflows/publish.yml@main
+#       with:
+#         working-directory: docs-site   # optional, defaults to repo root
+#
+# The calling repo needs GitHub Pages enabled with source "GitHub Actions" (Settings > Pages, or
+# `gh api -X POST repos/<owner>/<repo>/pages -f build_type=workflow`) - a one-time setup step this
+# workflow does not do on the caller's behalf.
+
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        description: Directory containing mkdocs.yml, relative to the calling repo's root.
+        type: string
+        default: "."
+      requirements-file:
+        description: Pip requirements file, relative to working-directory.
+        type: string
+        default: "requirements.txt"
+      python-version:
+        description: Python version to build with.
+        type: string
+        default: "3.13"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    steps:
+      - name: Checkout calling repo
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: ${{ inputs.python-version }}
+
+      - name: Install dependencies
+        run: pip install -r "${{ inputs.requirements-file }}"
+
+      - name: Build site
+        run: mkdocs build --strict
+
+      - name: Configure Pages
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+
+      - name: Upload build artifact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: ${{ inputs.working-directory }}/site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
