@@ -1,16 +1,23 @@
 # mkdocs-publisher
 
-A reusable GitHub Actions workflow that builds an [MkDocs Material](https://squidfunk.github.io/mkdocs-material/)
-site with `mkdocs build --strict` and deploys it to the *calling* repo's own GitHub Pages.
+A reusable GitHub Actions workflow that builds an [MkDocs](https://www.mkdocs.org/) site with
+`mkdocs build --strict` and deploys it to the *calling* repo's own GitHub Pages.
+
+**Theme-agnostic.** The workflow never installs or assumes a theme - it just runs `mkdocs build`
+against whatever `mkdocs.yml` and `requirements.txt` the calling repo provides. Pin
+[Material](https://squidfunk.github.io/mkdocs-material/), the built-in `readthedocs`/`mkdocs`
+themes, or any other MkDocs theme in *that repo's own* `requirements.txt` and `mkdocs.yml` -
+this workflow builds it exactly the same way either way.
 
 This repo holds the mechanism only. It never hosts content, and it isn't a template to copy -
-any repo, in any org, calls it directly and keeps full ownership of its own docs and its own
-Pages site.
+any repo, in any org, calls it directly and keeps full ownership of its own docs, its own theme
+choice, and its own Pages site.
 
 ## Usage
 
-1. Give the calling repo an MkDocs site (`mkdocs.yml`, a `requirements.txt` pinning
-   `mkdocs-material`, and a `docs/` directory) wherever you like in its tree.
+1. Give the calling repo an MkDocs site (`mkdocs.yml`, a `requirements.txt` pinning whichever
+   theme you want - e.g. `mkdocs-material` - and a `docs/` directory) wherever you like in its
+   tree.
 2. Enable GitHub Pages on that repo with source **GitHub Actions**:
    ```sh
    gh api -X POST repos/<owner>/<repo>/pages -f build_type=workflow

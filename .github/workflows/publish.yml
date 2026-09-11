@@ -1,9 +1,11 @@
 name: Publish MkDocs site
 
-# Reusable workflow: builds an MkDocs (Material) site with `mkdocs build --strict` and deploys it
-# to the CALLING repo's own GitHub Pages - not this repo's. This repo owns the mechanism only; it
-# never hosts content, so the same workflow serves any number of independent projects, in any org,
-# each publishing to its own Pages site.
+# Reusable workflow: builds an MkDocs site with `mkdocs build --strict` and deploys it to the
+# CALLING repo's own GitHub Pages - not this repo's. Theme-agnostic: this workflow never installs
+# or assumes a theme, it just builds whatever mkdocs.yml + requirements.txt the calling repo
+# provides (Material, readthedocs, anything else). This repo owns the mechanism only; it never
+# hosts content, so the same workflow serves any number of independent projects, in any org, each
+# publishing to its own Pages site with its own theme choice.
 #
 # Usage, from a calling repo's own workflow:
 #
