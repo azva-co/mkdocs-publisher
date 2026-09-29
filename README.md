@@ -1,5 +1,8 @@
 # mkdocs-publisher
 
+[![Lint](https://github.com/azva-co/mkdocs-publisher/actions/workflows/lint.yml/badge.svg)](https://github.com/azva-co/mkdocs-publisher/actions/workflows/lint.yml)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
+
 A reusable GitHub Actions workflow that builds an [MkDocs](https://www.mkdocs.org/) site with
 `mkdocs build --strict` and deploys it to the *calling* repo's own GitHub Pages.
 
@@ -39,9 +42,10 @@ choice, and its own Pages site.
 
    jobs:
      publish:
-       # Pin to a commit SHA, not @main - same discipline you'd want for any third-party
-       # action. Find the current one with: git ls-remote https://github.com/teerakarna/mkdocs-publisher main
-       uses: teerakarna/mkdocs-publisher/.github/workflows/publish.yml@<commit-sha> # main
+       # Pin to a commit SHA, not @main or a floating tag - same discipline you'd want for
+       # any third-party action. Find the SHA for the current v1 release with:
+       # git ls-remote https://github.com/azva-co/mkdocs-publisher v1
+       uses: azva-co/mkdocs-publisher/.github/workflows/publish.yml@<commit-sha> # v1
        with:
          working-directory: docs-site   # optional - defaults to repo root
    ```
@@ -63,6 +67,18 @@ Every project's docs deploy is the same five steps (checkout, install, build str
 deploy) copy-pasted with minor drift each time. This pins that pipeline in one place, SHA-pinned
 and verified, so a project's own workflow file is three lines instead of thirty - and a security
 fix to the pipeline lands everywhere that calls it, once.
+
+## Versioning
+
+Tagged with SemVer (`v1`, `v1.1.0`, ...) starting at `v1`. Pin callers to a commit SHA, same as
+any third-party action - the tag is there so Dependabot can propose real version bumps against a
+fixed release rather than a floating branch label, and so there's a human-readable changelog of
+what a bump actually changed. A breaking change to `publish.yml`'s inputs bumps the major version.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). For a security issue, see [SECURITY.md](SECURITY.md)
+rather than opening a public issue.
 
 ## License
 
