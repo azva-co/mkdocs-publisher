@@ -1,6 +1,6 @@
 # mkdocs-publisher
 
-[![Lint](https://github.com/azva-co/mkdocs-publisher/actions/workflows/lint.yml/badge.svg)](https://github.com/azva-co/mkdocs-publisher/actions/workflows/lint.yml)
+[![Lint](https://github.com/teerakarna/mkdocs-publisher/actions/workflows/lint.yml/badge.svg)](https://github.com/teerakarna/mkdocs-publisher/actions/workflows/lint.yml)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
 A reusable GitHub Actions workflow that builds an [MkDocs](https://www.mkdocs.org/) site with
@@ -44,8 +44,8 @@ choice, and its own Pages site.
      publish:
        # Pin to a commit SHA, not @main or a floating tag - same discipline you'd want for
        # any third-party action. Find the SHA for the current v1 release with:
-       # git ls-remote https://github.com/azva-co/mkdocs-publisher v1
-       uses: azva-co/mkdocs-publisher/.github/workflows/publish.yml@<commit-sha> # v1
+       # git ls-remote https://github.com/teerakarna/mkdocs-publisher v1
+       uses: teerakarna/mkdocs-publisher/.github/workflows/publish.yml@<commit-sha> # v1
        with:
          working-directory: docs-site   # optional - defaults to repo root
    ```
